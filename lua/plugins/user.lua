@@ -1,4 +1,3 @@
-
 -- You can also add or configure plugins by creating files in this `plugins/` folder
 -- Here are some examples:
 
@@ -77,9 +76,9 @@ return {
     end,
   },
   {
-        'MeanderingProgrammer/render-markdown.nvim',
-        dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' }, -- if you use the mini.nvim suite
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
     --     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     --         ---@module 'render-markdown'
     --             ---@type render.md.UserConfig
@@ -88,8 +87,11 @@ return {
   },
 
   {
-      "nvim-zh/colorful-winsep.nvim", -- colorful seperators
-      config = true,
-      event = { "WinLeave" },
+    "nvim-zh/colorful-winsep.nvim", -- colorful seperators
+    config = true,
+    event = { "WinLeave" },
+  },
+  {
+    "jbyuki/nabla.nvim", -- display inline latex
   },
 }
