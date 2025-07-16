@@ -94,4 +94,34 @@ return {
   {
     "jbyuki/nabla.nvim", -- display inline latex
   },
+
+  -- themes
+
+    {"morhetz/gruvbox", name="gruvbox", priority=1000
+    , config = function()
+      vim.g.gruvbox_vert_split = 'red'
+      vim.g.gruvbox_transparent_bg = true end,
+    --, gruvbox_contrast_dark = 'hard'
+    },
+
+    { "catppuccin/nvim", name = "catppuccin", priority = 999 },
+
+  {"github/copilot.vim", event="InsertEnter", 
+  config = function() 
+      vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<CR>")', {
+          expr = true,
+          replace_keycodes = false
+        })
+        vim.g.copilot_no_tab_map = true 
+        -- vim.cmd [[highlight CopilotSuggestion guifg=#a08060    ctermfg=203]]
+        vim.cmd [[highlight CopilotSuggestion guifg=#a06e56     ctermfg=203]]
+    end},
+  -- not working as intended yet
+  --
+  -- {
+  -- "backdround/tabscope.nvim",
+  --   config = function()
+  --     require("tabscope").setup({})
+  --   end,
+  --   }
 }
