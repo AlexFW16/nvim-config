@@ -36,7 +36,7 @@ return {
           ["<Leader>rp"] = {
             function()
               require("toggleterm.terminal").Terminal
-                :new({ cmd = "python3 " .. vim.fn.expand "%", direction = "float" })
+                :new({ cmd = "python3 " .. vim.fn.expand "%", direction = "horizontal", close_on_exit = false })
                 :toggle()
             end,
             desc = "Run current file with Python 3",
@@ -53,7 +53,18 @@ return {
             function() require("toggleterm.terminal").Terminal:new({ cmd = "make", direction = "float" }):toggle() end,
             desc = "Run make",
           },
-
+          ["<Leader>rr"] = {
+            function()
+              require("toggleterm.terminal").Terminal
+                :new({
+                  cmd = "Rscript " .. vim.fn.shellescape(vim.fn.expand "%"),
+                  direction = "horizontal",
+                  close_on_exit = false,
+                })
+                :toggle()
+            end,
+            desc = "Run with Rscript",
+          },
           -- Custom Keymaps
           ["<Leader>zs"] = {
             function()
