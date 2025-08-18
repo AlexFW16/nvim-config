@@ -116,6 +116,65 @@ return {
         -- vim.cmd [[highlight CopilotSuggestion guifg=#a08060    ctermfg=203]]
         vim.cmd [[highlight CopilotSuggestion guifg=#a06e56     ctermfg=203]]
     end},
+
+
+  -- when moving smth in neo-tree, the cursor is
+  -- set to the first slash before the filename
+{
+  "nvim-neo-tree/neo-tree.nvim",
+  branch = "v3.x",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-tree/nvim-web-devicons",
+    "MunifTanjim/nui.nvim",
+  },
+  config = function()
+    require("neo-tree").setup({
+      -- your other neo-tree options here (filesystem, default_component_configs, etc.)
+      event_handlers = {
+        {
+          event = "neo_tree_popup_input_ready",
+          handler = function(args)
+            pcall(function()
+              local bufnr, winid = args.bufnr, args.winid
+              if not bufnr or not winid then return end
+
+              -- read first line of popup buffer
+              local line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, false)[1] or ""
+              -- find last slash or backslash
+              local pos
+              for i = #line, 1, -1 do
+                local ch = line:sub(i, i)
+                if ch == "/" or ch == "\\" then
+                  pos = i
+                  break
+                end
+              end
+
+              local col = 0
+              if pos then
+                -- pos is 1-based char index of slash; set col to pos to place cursor after slash
+                col = pos
+              end
+
+              -- schedule to avoid races with Nui/Neo-tree internals
+              vim.schedule(function()
+                vim.api.nvim_win_set_cursor(winid, {1, col})
+                -- if popup lost insert mode, re-enter insert (optional)
+                  -- Exit insert mode if active
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
+                -- Start visual mode (selecting 1 char)
+                -- vim.api.nvim_feedkeys("v", "n", true)
+              end)
+            end)
+          end,
+        },
+      },
+    })
+  end,
+},
+
+
   -- not working as intended yet
   --
   -- {
