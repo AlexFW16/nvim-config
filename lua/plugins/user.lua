@@ -110,6 +110,19 @@ return {
 
   { "catppuccin/nvim", name = "catppuccin", priority = 999 },
 
+  {
+    "github/copilot.vim",
+    event = "InsertEnter",
+    config = function()
+      vim.keymap.set("i", "<S-Tab>", 'copilot#Accept("\\<CR>")', {
+        expr = true,
+        replace_keycodes = false,
+      })
+      vim.g.copilot_no_tab_map = true
+      -- vim.cmd [[highlight CopilotSuggestion guifg=#a08060    ctermfg=203]]
+      vim.cmd [[highlight CopilotSuggestion guifg=#a06e56     ctermfg=203]]
+    end,
+  },
 
   -- when moving smth in neo-tree, the cursor is
   -- set to the first slash before the filename
