@@ -126,55 +126,96 @@ return {
 
   -- when moving smth in neo-tree, the cursor is
   -- set to the first slash before the filename
-{
-  "nvim-neo-tree/neo-tree.nvim",
-  branch = "v3.x",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    "nvim-tree/nvim-web-devicons",
-    "MunifTanjim/nui.nvim",
-  },
-  config = function()
-    require("neo-tree").setup({
-      -- your other neo-tree options here (filesystem, default_component_configs, etc.)
-      event_handlers = {
-        {
-          event = "neo_tree_popup_input_ready",
-          handler = function(args)
-            pcall(function()
-              local bufnr, winid = args.bufnr, args.winid
-              if not bufnr or not winid then return end
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+    },
+    -- opts = {filesystem ={ renderer = { components = {"icon", "name", "size"}}}}, -- Would always expand size to show everything (like pressing e)
+    config = function()
+      require("neo-tree").setup {
+        -- custom command to show all file infos
+        filesystem = {
+          window = {
+            mappings = {
+              ["E"] = "expand_all_stats",
+              ["Y"] = "copy_path_from_root",
+            },
+          },
+          commands = {
+            expand_all_stats = function(state)
+              vim.notify(tostring(vim.api.nvim_win_get_width(vim.api.nvim_get_current_win())))
 
-              -- read first line of popup buffer
-              local line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, false)[1] or ""
-              -- find last slash or backslash
-              local pos
-              for i = #line, 1, -1 do
-                local ch = line:sub(i, i)
-                if ch == "/" or ch == "\\" then
-                  pos = i
-                  break
-                end
+              if vim.api.nvim_win_get_width(vim.api.nvim_get_current_win()) >= 100 then
+                require("neo-tree.sources.filesystem.commands").toggle_auto_expand_width(state)
+                -- vim.api.nvim_win_set_width(state.winid, 100)
+              else
+                vim.api.nvim_win_set_width(state.winid, 100)
               end
+              -- require"neo-tree.sources.filesystem.commands".open_vsplit(state)
+            end,
 
-              local col = 0
-              if pos then
-                -- pos is 1-based char index of slash; set col to pos to place cursor after slash
-                col = pos
-              end
-
-              -- schedule to avoid races with Nui/Neo-tree internals
-              vim.schedule(function()
-                vim.api.nvim_win_set_cursor(winid, {1, col})
-                -- if popup lost insert mode, re-enter insert (optional)
-                  -- Exit insert mode if active
-                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-                -- Start visual mode (selecting 1 char)
-                -- vim.api.nvim_feedkeys("v", "n", true)
-              end)
-            end)
-          end,
+            -- to copy path relative to root
+            copy_path_from_root = function(state)
+              local node = state.tree:get_node()
+              if node.type ~= "file" and node.type ~= "directory" then return end
+              local path = node.path
+              local root = state.path
+              if not root or root == "" then root = vim.loop.cwd() end
+              local relative_path = string.sub(path, #root + 2)
+              vim.fn.setreg("+", relative_path)
+              vim.notify("Copied to clipboard: " .. relative_path)
+            end,
+          },
         },
+
+        -- your other neo-tree options here (filesystem, default_component_configs, etc.)
+        event_handlers = {
+          {
+            event = "neo_tree_popup_input_ready",
+            handler = function(args)
+              pcall(function()
+                local bufnr, winid = args.bufnr, args.winid
+                if not bufnr or not winid then return end
+
+                -- read first line of popup buffer
+                local line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, false)[1] or ""
+                -- find last slash or backslash
+                local pos
+                for i = #line, 1, -1 do
+                  local ch = line:sub(i, i)
+                  if ch == "/" or ch == "\\" then
+                    pos = i
+                    break
+                  end
+                end
+
+                local col = 0
+                if pos then
+                  -- pos is 1-based char index of slash; set col to pos to place cursor after slash
+                  col = pos
+                end
+
+                -- schedule to avoid races with Nui/Neo-tree internals
+                vim.schedule(function()
+                  vim.api.nvim_win_set_cursor(winid, { 1, col })
+                  -- if popup lost insert mode, re-enter insert (optional)
+                  -- Exit insert mode if active
+                  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
+                  -- Start visual mode (selecting 1 char)
+                  -- vim.api.nvim_feedkeys("v", "n", true)
+                end)
+              end)
+            end,
+          },
+        },
+      }
+    end,
+  },
+
       },
     })
   end,
