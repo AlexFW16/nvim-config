@@ -87,9 +87,49 @@ return {
     --                 }
   },
 
+  -- colourfol seperators
   {
-      "nvim-zh/colorful-winsep.nvim", -- colorful seperators
+      "nvim-zh/colorful-winsep.nvim", 
       config = true,
       event = { "WinLeave" },
   },
+  
+  -- For local LLM in nvim
+  {
+  "ibhagwan/fzf-lua", 
+  -- optional for icon support
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  -- or if using mini.icons/mini.nvim
+  -- dependencies = { "echasnovski/mini.icons" },
+  opts = {}
+},
+{
+    "Dan7h3x/chatter.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      "ibhagwan/fzf-lua",
+    },
+    keys = { {
+      "<leader>cc", "<Cmd>ChatterStart<CR>", desc = "Chatter Start"
+    }, },
+    config = function()
+      require('chatter').setup({
+        offline_api_url = os.getenv("OLLAMA_HOST") or "http://localhost:8888",
+        sidebar_width = 60,
+        sidebar_height = vim.o.lines - 12,
+        models = {},
+        highlight = {
+          title = "Title",
+          user = "Comment",
+          assistant = "String",
+          system = "Type",
+          error = "ErrorMsg",
+          loading = "WarningMsg",
+
+        }
+      })
+    end,
+  }
+
 }
