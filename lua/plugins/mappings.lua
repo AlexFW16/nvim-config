@@ -65,7 +65,10 @@ return {
             end,
             desc = "Run with Rscript",
           },
+
           -- Custom Keymaps
+          ["<Leader>fd"] = { function() vim.cmd "Telescope diagnostics" end, desc = "Find diagnostics" },
+
           ["<Leader>zs"] = {
             function()
               vim.cmd "vsplit"
