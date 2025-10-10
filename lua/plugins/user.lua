@@ -299,6 +299,12 @@ return {
     "tpope/vim-fugitive", -- required for :Gvdiffsplit
   },
 
+  -- My own compac plugin
+  {
+    "AlexFW16/compac.nvim",
+    config = function() require("compac").setup() end,
+  },
+
   vim.keymap.set("n", "<leader>gD", function()
     -- Ensure fugitive is loaded
     require("telescope.builtin").git_branches {
@@ -325,6 +331,7 @@ return {
     }
   end, { desc = "Git diff against selected branch" }),
 
+  -- My own compac plugin
   -- {
   -- "backdround/tabscope.nvim",
   --   config = function()
