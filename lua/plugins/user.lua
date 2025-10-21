@@ -76,23 +76,36 @@ return {
     end,
   },
   {
-    "MeanderingProgrammer/render-markdown.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-    --     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-    --         ---@module 'render-markdown'
-    --             ---@type render.md.UserConfig
-    --                 opts = {},
-    --                 }
-  },
-
-  {
     "nvim-zh/colorful-winsep.nvim", -- colorful seperators
     config = true,
     event = { "WinLeave" },
   },
+
+  -- latex completion
+
   {
-    "jbyuki/nabla.nvim", -- display inline latex
+    "kdheepak/cmp-latex-symbols",
+    config = function()
+      require("cmp").setup {
+        sources = {
+          { name = "latex_symbols" },
+          -- your other sources...
+        },
+      }
+    end,
+  },
+
+  {
+    "toppair/peek.nvim",
+    event = { "VeryLazy" },
+    build = "deno task --quiet build:fast",
+    config = function()
+      require("peek").setup {
+        app = "browser",
+      }
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+    end,
   },
 
   -- themes
@@ -304,7 +317,22 @@ return {
     "AlexFW16/compac.nvim",
     config = function() require("compac").setup() end,
   },
+  -- better visibility and context stuff
+  -- TODO: fix: has some issue with icons
+  {
+    "utilyre/barbecue.nvim",
+    name = "barbecue",
+    version = "*",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons", -- optional dependency
+    },
+    opts = {
+      -- configurations go here
+    },
+  },
 
+  -- TODO: move to mappings?
   vim.keymap.set("n", "<leader>gD", function()
     -- Ensure fugitive is loaded
     require("telescope.builtin").git_branches {
@@ -330,12 +358,4 @@ return {
       end,
     }
   end, { desc = "Git diff against selected branch" }),
-
-  -- My own compac plugin
-  -- {
-  -- "backdround/tabscope.nvim",
-  --   config = function()
-  --     require("tabscope").setup({})
-  --   end,
-  --   }
 }

@@ -67,7 +67,47 @@ return {
           },
 
           -- Custom Keymaps
-          ["<Leader>fd"] = { function() vim.cmd "Telescope diagnostics" end, desc = "Find diagnostics" },
+          --
+          --
+          ["<Leader>zm"] = {
+            function()
+              require "peek"
+              if require("peek").is_open() then
+                vim.cmd "PeekClose"
+              else
+                vim.cmd "PeekOpen"
+              end
+            end,
+            desc = "Opens/Closes md preview",
+          },
+          ["<Leader>zl"] = {
+            function()
+              -- get the full path of the current file
+              local file = vim.fn.expand "%:p"
+              -- output HTML filename in the same folder
+              local html = file:gsub("%.md$", ".html")
+              -- run Pandoc with MathJax CDN
+              local cmd = string.format(
+                'pandoc "%s" -o "%s" --standalone --mathjax="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"',
+                file,
+                html
+              )
+              -- execute the command
+              vim.fn.system(cmd)
+              -- open in default browser
+              vim.fn.system("wslview " .. html)
+              print("Exported to " .. html .. " and opened in browser!")
+            end,
+            desc = "Renders and exports markdown with latex",
+          },
+          ["<Leader>fd"] = {
+            function() require("telescope.builtin").diagnostics() end,
+            desc = "Find diagnostics (buffer)",
+          },
+          ["<Leader>fD"] = {
+            function() vim.cmd "Telescope lsp_workspace_diagnostics" end,
+            desc = "Find diagnostics (all files)",
+          },
 
           ["<Leader>zs"] = {
             function()
@@ -80,10 +120,6 @@ return {
           }, -- setup for COMPAC
 
           ["<Leader>zf"] = { function() vim.lsp.buf.format { async = true } end, desc = "LSP: Format file" }, -- Auto formats the file
-          ["<Leader>zl"] = {
-            function() require("nabla").popup { border = "rounded" } end,
-            desc = "Render inline latex",
-          },
         },
 
         t = {
