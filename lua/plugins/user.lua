@@ -76,11 +76,51 @@ return {
     end,
   },
   -- colourfol seperators
-  {
-    "nvim-zh/colorful-winsep.nvim", -- colorful seperators
-    config = true,
-    event = { "WinLeave" },
-  },
+  -- {
+  --   "nvim-zh/colorful-winsep.nvim", -- colorful seperators
+  --   event = { "WinLeave" },
+  --
+  --   config = function()
+  --     require("colorful-winsep").setup {
+  --       -- choose between "single", "rounded", "bold" and "double".
+  --       -- Or pass a table like this: { "─", "│", "┌", "┐", "└", "┘" },
+  --       border = "asdfsf",
+  --       excluded_ft = { "packer", "TelescopePrompt", "mason" },
+  --       highlight = nil, -- nil|string|function. See the docs's Highlights section
+  --       animate = {
+  --         enabled = "shift", -- false to disable, or choose a option below (e.g. "shift") and set option for it if needed
+  --         shift = {
+  --           delta_time = 0.1,
+  --           smooth_speed = 1,
+  --           delay = 3,
+  --         },
+  --         progressive = {
+  --           -- animation's speed for different direction
+  --           vertical_delay = 20,
+  --           horizontal_delay = 2,
+  --         },
+  --       },
+  --       indicator_for_2wins = {
+  --         -- only work when the total of windows is two
+  --         position = "both", -- false to disable or choose between "center", "start", "end" and "both"
+  --         symbols = {
+  --           -- the meaning of left, down ,up, right is the position of separator
+  --           start_left = "󱞬",
+  --           end_left = "󱞪",
+  --           start_down = "󱞾",
+  --           end_down = "󱟀",
+  --           start_up = "󱞢",
+  --           end_up = "󱞤",
+  --           start_right = "󱞨",
+  --           end_right = "󱞦",
+  --         },
+  --       },
+  --     }
+  --
+  --     -- vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#ff0000" })
+  --   end,
+  -- },
+
   {
     "jbyuki/nabla.nvim", -- display inline latex
   },
@@ -111,6 +151,28 @@ return {
       vim.g.copilot_no_tab_map = true
       -- vim.cmd [[highlight CopilotSuggestion guifg=#a08060    ctermfg=203]]
       vim.cmd [[highlight CopilotSuggestion guifg=#a06e56     ctermfg=203]]
+    end,
+  },
+  -- statusline
+
+  {
+    "windwp/windline.nvim",
+    config = function()
+      require "wlsample.airline" -- animations/colors
+      vim.schedule(function()
+        require("plugins.statusline").setup() -- only called **after windline is loaded**
+      end)
+    end,
+  },
+
+  {
+    "toppair/peek.nvim",
+    config = function()
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+      require("peek").setup {
+        app = "browser",
+      }
     end,
   },
 
