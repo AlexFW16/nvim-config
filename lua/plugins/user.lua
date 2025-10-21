@@ -121,18 +121,21 @@ return {
   --   end,
   -- },
 
-  {
-    "kdheepak/cmp-latex-symbols",
-    config = function()
-      require("cmp").setup {
-        sources = {
-          { name = "latex_symbols" },
-          -- your other sources...
-        },
-      }
-    end,
-  },
-
+  -- FIX: Warning:
+  -- This breaks autocomplete, at least for python rn!
+  --
+  -- {
+  --   "kdheepak/cmp-latex-symbols",
+  --   config = function()
+  --     require("cmp").setup {
+  --       sources = {
+  --         { name = "latex_symbols" },
+  --         -- your other sources...
+  --       },
+  --     }
+  --   end,
+  -- },
+  --
   {
     "toppair/peek.nvim",
     event = { "VeryLazy" },
