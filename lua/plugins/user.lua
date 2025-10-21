@@ -122,7 +122,28 @@ return {
   -- },
 
   {
-    "jbyuki/nabla.nvim", -- display inline latex
+    "kdheepak/cmp-latex-symbols",
+    config = function()
+      require("cmp").setup {
+        sources = {
+          { name = "latex_symbols" },
+          -- your other sources...
+        },
+      }
+    end,
+  },
+
+  {
+    "toppair/peek.nvim",
+    event = { "VeryLazy" },
+    build = "deno task --quiet build:fast",
+    config = function()
+      require("peek").setup {
+        app = "browser",
+      }
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+    end,
   },
 
   -- themes
@@ -351,6 +372,27 @@ return {
     "tpope/vim-fugitive", -- required for :Gvdiffsplit
   },
 
+  -- My own compac plugin
+  {
+    "AlexFW16/compac.nvim",
+    config = function() require("compac").setup() end,
+  },
+  -- better visibility and context stuff
+  -- TODO: fix: has some issue with icons
+  {
+    "utilyre/barbecue.nvim",
+    name = "barbecue",
+    version = "*",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons", -- optional dependency
+    },
+    opts = {
+      -- configurations go here
+    },
+  },
+
+  -- TODO: move to mappings?
   vim.keymap.set("n", "<leader>gD", function()
     -- Ensure fugitive is loaded
     require("telescope.builtin").git_branches {
@@ -376,11 +418,4 @@ return {
       end,
     }
   end, { desc = "Git diff against selected branch" }),
-
-  -- {
-  -- "backdround/tabscope.nvim",
-  --   config = function()
-  --     require("tabscope").setup({})
-  --   end,
-  --   }
 }

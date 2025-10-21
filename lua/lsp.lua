@@ -25,6 +25,8 @@ lspconfig.ltex.setup {
   },
 }
 
+lspconfig.marksman.setup {}
+
 -- 4) Any other servers…
 -- lspconfig.pyright.setup{}
 -- lspconfig.r_language_server.setup{}

@@ -1,5 +1,3 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
 -- Customize Mason plugins
 
 ---@type LazySpec
@@ -24,6 +22,7 @@ return {
       -- add more things to the ensure_installed table protecting against community packs modifying it
       opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, {
         "stylua",
+        "black",
         -- add more arguments for adding more null-ls sources
       })
     end,
@@ -37,6 +36,26 @@ return {
         "python",
         -- add more arguments for adding more debuggers
       })
+    end,
+  },
+
+  -- extend line length black formatter
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    opts = function(_, opts)
+      local nls = require "null-ls"
+      opts.sources = opts.sources or {}
+
+      -- remove any existing black formatter to avoid duplicates
+      opts.sources = vim.tbl_filter(function(source) return source.name ~= "black" end, opts.sources)
+
+      -- add black with custom args
+      table.insert(
+        opts.sources,
+        nls.builtins.formatting.black.with {
+          extra_args = { "--line-length", "20" },
+        }
+      )
     end,
   },
 }

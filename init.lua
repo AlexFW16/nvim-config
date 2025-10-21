@@ -15,15 +15,15 @@ if not pcall(require, "lazy") then
   vim.cmd.quit()
 end
 
-if vim.fn.has('nvim') == 1 then
-	vim.env.TERM = 'alacritty'
-	vim.env.TERMINANL = 'alacritty'
+if vim.fn.has "nvim" == 1 then
+  vim.env.TERM = "alacritty"
+  vim.env.TERMINANL = "alacritty"
 end
 
 -- my stuff
 vim.opt.shell = "/bin/bash"
-vim.env.JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
-vim.env.PATH = vim.env.PATH .. ':/usr/lib/jvm/java-17-openjdk-amd64/bin'
+vim.env.JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64"
+vim.env.PATH = vim.env.PATH .. ":/usr/lib/jvm/java-17-openjdk-amd64/bin"
 
 -- setup for ast-grep bc it doesnt find config
 
