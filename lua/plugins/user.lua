@@ -75,25 +75,78 @@ return {
       )
     end,
   },
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-    --     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-    --         ---@module 'render-markdown'
-    --             ---@type render.md.UserConfig
-    --                 opts = {},
-    --                 }
-  },
-
   -- colourfol seperators
+  -- {
+  --   "nvim-zh/colorful-winsep.nvim", -- colorful seperators
+  --   event = { "WinLeave" },
+  --
+  --   config = function()
+  --     require("colorful-winsep").setup {
+  --       -- choose between "single", "rounded", "bold" and "double".
+  --       -- Or pass a table like this: { "─", "│", "┌", "┐", "└", "┘" },
+  --       border = "asdfsf",
+  --       excluded_ft = { "packer", "TelescopePrompt", "mason" },
+  --       highlight = nil, -- nil|string|function. See the docs's Highlights section
+  --       animate = {
+  --         enabled = "shift", -- false to disable, or choose a option below (e.g. "shift") and set option for it if needed
+  --         shift = {
+  --           delta_time = 0.1,
+  --           smooth_speed = 1,
+  --           delay = 3,
+  --         },
+  --         progressive = {
+  --           -- animation's speed for different direction
+  --           vertical_delay = 20,
+  --           horizontal_delay = 2,
+  --         },
+  --       },
+  --       indicator_for_2wins = {
+  --         -- only work when the total of windows is two
+  --         position = "both", -- false to disable or choose between "center", "start", "end" and "both"
+  --         symbols = {
+  --           -- the meaning of left, down ,up, right is the position of separator
+  --           start_left = "󱞬",
+  --           end_left = "󱞪",
+  --           start_down = "󱞾",
+  --           end_down = "󱟀",
+  --           start_up = "󱞢",
+  --           end_up = "󱞤",
+  --           start_right = "󱞨",
+  --           end_right = "󱞦",
+  --         },
+  --       },
+  --     }
+  --
+  --     -- vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#ff0000" })
+  --   end,
+  -- },
+
+  -- FIX: Warning:
+  -- This breaks autocomplete, at least for python rn!
+  --
+  -- {
+  --   "kdheepak/cmp-latex-symbols",
+  --   config = function()
+  --     require("cmp").setup {
+  --       sources = {
+  --         { name = "latex_symbols" },
+  --         -- your other sources...
+  --       },
+  --     }
+  --   end,
+  -- },
+  --
   {
-    "nvim-zh/colorful-winsep.nvim", -- colorful seperators
-    config = true,
-    event = { "WinLeave" },
-  },
-  {
-    "jbyuki/nabla.nvim", -- display inline latex
+    "toppair/peek.nvim",
+    event = { "VeryLazy" },
+    build = "deno task --quiet build:fast",
+    config = function()
+      require("peek").setup {
+        app = "browser",
+      }
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+    end,
   },
 
   -- themes
@@ -122,6 +175,28 @@ return {
       vim.g.copilot_no_tab_map = true
       -- vim.cmd [[highlight CopilotSuggestion guifg=#a08060    ctermfg=203]]
       vim.cmd [[highlight CopilotSuggestion guifg=#a06e56     ctermfg=203]]
+    end,
+  },
+  -- statusline
+
+  {
+    "windwp/windline.nvim",
+    config = function()
+      require "wlsample.airline" -- animations/colors
+      vim.schedule(function()
+        require("plugins.statusline").setup() -- only called **after windline is loaded**
+      end)
+    end,
+  },
+
+  {
+    "toppair/peek.nvim",
+    config = function()
+      vim.api.nvim_create_user_command("PeekOpen", require("peek").open, {})
+      vim.api.nvim_create_user_command("PeekClose", require("peek").close, {})
+      require("peek").setup {
+        app = "browser",
+      }
     end,
   },
 
@@ -300,6 +375,27 @@ return {
     "tpope/vim-fugitive", -- required for :Gvdiffsplit
   },
 
+  -- My own compac plugin
+  {
+    "AlexFW16/compac.nvim",
+    config = function() require("compac").setup() end,
+  },
+  -- better visibility and context stuff
+  -- TODO: fix: has some issue with icons
+  {
+    "utilyre/barbecue.nvim",
+    name = "barbecue",
+    version = "*",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons", -- optional dependency
+    },
+    opts = {
+      -- configurations go here
+    },
+  },
+
+  -- TODO: move to mappings?
   vim.keymap.set("n", "<leader>gD", function()
     -- Ensure fugitive is loaded
     require("telescope.builtin").git_branches {
@@ -325,11 +421,4 @@ return {
       end,
     }
   end, { desc = "Git diff against selected branch" }),
-
-  -- {
-  -- "backdround/tabscope.nvim",
-  --   config = function()
-  --     require("tabscope").setup({})
-  --   end,
-  --   }
 }
