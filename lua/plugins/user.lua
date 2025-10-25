@@ -183,9 +183,9 @@ return {
     "windwp/windline.nvim",
     config = function()
       require "wlsample.airline" -- animations/colors
-      vim.schedule(function()
-        require("plugins.statusline").setup() -- only called **after windline is loaded**
-      end)
+      -- vim.schedule(function()
+      --   require("plugins.statusline").setup() -- only called **after windline is loaded**
+      -- end)
     end,
   },
 
@@ -380,15 +380,19 @@ return {
     "AlexFW16/compac.nvim",
     config = function() require("compac").setup() end,
   },
+
   -- better visibility and context stuff
-  -- TODO: fix: has some issue with icons
   {
     "utilyre/barbecue.nvim",
     name = "barbecue",
     version = "*",
     dependencies = {
       "SmiteshP/nvim-navic",
-      "nvim-tree/nvim-web-devicons", -- optional dependency
+      {
+        -- needed so that barbecue works fine with get_icons
+        "nvim-tree/nvim-web-devicons",
+        config = function() require("nvim-web-devicons").setup() end,
+      },
     },
     opts = {
       -- configurations go here
