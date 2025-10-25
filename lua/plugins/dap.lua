@@ -50,7 +50,7 @@ return {
         },
       }
 
-      vim.notify("DAP Python adapter using: " .. python_path)
+      if python_path ~= "" then vim.notify("[DAP Python] " .. python_path) end
     end,
   },
 }
